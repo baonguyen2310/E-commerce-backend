@@ -12,6 +12,8 @@ const app = express()
 app.use(morgan("dev"))
 app.use(helmet())
 app.use(compression())
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 // init db
 // lv0
@@ -26,13 +28,7 @@ const { checkOverload } = require('./helpers/check.connect')
 //checkOverload()
 
 // init routers
-app.get('/', (req, res, next) => {
-    const compressionStr = 'Hello Nodejs'
-    return res.status(200).json({
-        message: 'Wellcome',
-        //metadata: compressionStr.repeat(100000)
-    })
-})
+app.use('/', require('./routes'))
 
 // handling error
 
