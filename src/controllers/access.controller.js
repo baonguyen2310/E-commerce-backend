@@ -3,11 +3,10 @@ const AccessService = require('../services/access.service')
 class AccessController {
     signUp = async (req, res, next) => {
         try {
-            return res.status(201).json(
-                await AccessService.signUp(req.body) // gửi tokens cho client
-            )
+            const response = await AccessService.signUp(req.body)
+            return response.send(res) //gửi tokens cho client
         } catch (error) {
-            next(error)
+            next(error) //truyền error xuống middleware handle error toàn cục
         }
     }
 }

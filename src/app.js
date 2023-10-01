@@ -38,7 +38,7 @@ app.use((req, res, next) => {
     next(error) // truyền error xuống middleware tiếp theo
 })
 
-// middleware xử lý
+// middleware handle error toàn cục
 app.use((error, req, res, next) => {
     const statusCode = error.status || 500 // 404 (not found) hoặc 500 (server error)
     return res.status(statusCode).json({

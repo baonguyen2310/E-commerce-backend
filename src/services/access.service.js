@@ -4,6 +4,8 @@ const shopModel = require('../models/shop.model')
 const KeyTokenService = require('./keytoken.service') // lưu publicKey vào db
 const { createTokenPair } = require('../auth/authUtils')
 const { getInfoData } = require('../utils')
+const { BadRequestError, ConflictRequestError } = require('../core/error.response')
+const { OK, CREATED } = require('../core/success.response')
 
 const RoleShop = {
     SHOP: 'SHOP',
@@ -15,14 +17,13 @@ const RoleShop = {
 class AccessService {
     
     static signUp = async ({ name, email, password }) => {
-        try {
+        // try {
             // step1: check email exists?
             const holderShop = await shopModel.findOne({ email }).lean()
             if (holderShop) {
-                return {
-                    code: 'xxxx',
-                    message: 'Shop already exist'
-                }
+                throw new ConflictRequestError({
+                    message: 'Shop already existed'
+                })
             }
 
             const passwordHash = await bcrypt.hash(password, 10)
@@ -32,7 +33,7 @@ class AccessService {
             })
 
             // đăng ký xong là đăng nhập luôn
-            if (newShop) {
+            if (!newShop) {
                 // create privateKey, publicKey
                 const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
                     modulusLength: 4096,
@@ -53,10 +54,9 @@ class AccessService {
                 })
 
                 if (!publicKeyString) {
-                    return {
-                        code: 'xxxx',
+                    throw new BadRequestError({
                         message: 'publicKeyString error'
-                    }
+                    })
                 }
 
                 // lấy ra để tạo tokens cho client và verify: chuyển publicKeyString thành object
@@ -71,29 +71,28 @@ class AccessService {
                 //console.log('create tokens success::', tokens)
 
                 // trả về tokens cho controller
-                return {
-                    code: 201,
+                return new CREATED({
+                    message: 'Shop created',
                     metadata: {
                         shop: getInfoData({ fields: ['_id', 'name', 'email'], object: newShop }),
                         tokens
                     }
-                }
+                })
 
             }
 
             // api thành công nhưng tạo không thành công
-            return {
-                code: 200,
-                metadata: null
-            }
+            return new OK({
+                message: 'OK'
+            })
 
-        } catch (error) {
-            return {
-                code: 'xxx',
-                message: error.message,
-                status: 'error'
-            }
-        }
+        // } catch (error) {
+        //     return {
+        //         code: 'xxx',
+        //         message: error.message,
+        //         status: 'error'
+        //     }
+        // }
     }
 
 }

@@ -9,7 +9,7 @@ const ReasonStatusCode = {
 }
 
 class SuccessResponse {
-    constructor({ message, statusCode = StatusCode.OK, reasonStatusCode = ReasonStatusCode.OK, metadata: {} }) {
+    constructor({ message, statusCode = StatusCode.OK, reasonStatusCode = ReasonStatusCode.OK, metadata = {} }) {
         this.message = message ? message : reasonStatusCode
         this.status = statusCode
         this.metadata = metadata
@@ -21,7 +21,7 @@ class SuccessResponse {
 }
 
 class OK extends SuccessResponse {
-    constructor({ message, statusCode = StatusCode.OK, reasonStatusCode = ReasonStatusCode.OK, metadata: {}}) {
+    constructor({ message, statusCode = StatusCode.OK, reasonStatusCode = ReasonStatusCode.OK, metadata = {}}) {
         super({ message, statusCode, reasonStatusCode, metadata })
     }
 }
