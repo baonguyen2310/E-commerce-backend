@@ -146,6 +146,11 @@ class AccessService {
         })
     }
 
+    static logout = async (keyStore) => {
+        await KeyTokenService.deleteById(keyStore._id)
+        return new OK({ message: 'logged out' })
+    }
+
 }
 
 module.exports = AccessService

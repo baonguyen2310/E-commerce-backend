@@ -19,6 +19,15 @@ class AccessController {
             next(error)
         }
     }
+
+    logout = async (req, res, next) => {
+        try {
+            const response = await AccessService.logout(req.keyStore)
+            return response.send(res)
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = new AccessController()
