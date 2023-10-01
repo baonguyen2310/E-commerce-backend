@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 const shopModel = require('../models/shop.model')
-const KeyTokenService = require('./keytoken.service')
+const KeyTokenService = require('./keytoken.service') // lưu publicKey vào db
 const { createTokenPair } = require('../auth/authUtils')
 const { getInfoData } = require('../utils')
 
