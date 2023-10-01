@@ -68,7 +68,7 @@ class AccessService {
                     publicKeyObject,
                     privateKey
                 )
-                console.log('create tokens success::', tokens)
+                //console.log('create tokens success::', tokens)
 
                 // trả về tokens cho controller
                 return {

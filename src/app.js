@@ -31,6 +31,21 @@ const { checkOverload } = require('./helpers/check.connect')
 app.use('/', require('./routes'))
 
 // handling error
+// middleware này sẽ thực thi khi không tìm thấy router
+app.use((req, res, next) => {
+    const error = new Error('Not Found')
+    error.status = 404
+    next(error) // truyền error xuống middleware tiếp theo
+})
 
+// middleware xử lý
+app.use((error, req, res, next) => {
+    const statusCode = error.status || 500 // 404 (not found) hoặc 500 (server error)
+    return res.status(statusCode).json({
+        status: 'error',
+        code: statusCode,
+        message: error.message || 'Internal Server Error'
+    })
+})
 
 module.exports = app
