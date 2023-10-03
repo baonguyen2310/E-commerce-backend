@@ -59,6 +59,7 @@ const authentication = async (req, res, next) => {
 
         // 6. return next()
         req.keyStore = keyStore
+        req.user = decodeUser
         return next()
         
     } catch (error) {

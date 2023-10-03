@@ -6,7 +6,13 @@ const { OK, CREATED } = require('../core/success.response')
 class ProductController {
     createProduct = async (req, res, next) => {
         try {
-            const newProduct =  await ProductService.createProduct(req.body.product_type, req.body)
+            const newProduct =  await ProductService.createProduct(
+                req.body.product_type,
+                {
+                    ...req.body,
+                    product_shop: req.user.userId //product_shop lấy từ userId được decode ra từ middleware authentication
+                }
+                )
             return new CREATED({
                 message: 'created product success',
                 metadata: newProduct

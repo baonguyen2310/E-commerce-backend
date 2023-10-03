@@ -29,17 +29,23 @@ class Product {
         this.product_attributes = product_attributes
     }
 
-    async createProduct() {
-        return await productModel.create(this)
+    async createProduct(product_id) {
+        return await productModel.create({
+            ...this,
+            _id: product_id
+        })
     }
 }
 
 class Clothing extends Product {
     async createProduct() {
-        const newClothing = await clothingModel.create(this.product_attributes)
+        const newClothing = await clothingModel.create({
+            ...this.product_attributes, //product_attributes không chứa product_shop
+            product_shop: this.product_shop
+        })
         if (!newClothing) throw new BadRequestError({ message: 'create newClothing error' })
 
-        const newProduct = await super.createProduct()
+        const newProduct = await super.createProduct(newClothing._id) // product dùng chung _id với clothing
         if (!newProduct) throw new BadRequestError({ message: 'create newProduct error' })
 
         return newProduct
@@ -48,10 +54,13 @@ class Clothing extends Product {
 
 class Electronic extends Product {
     async createProduct() {
-        const newElectronic = await electronicModel.create(this.product_attributes)
+        const newElectronic = await electronicModel.create({
+            ...this.product_attributes,
+            product_shop: this.product_shop
+        })
         if (!newElectronic) throw new BadRequestError({ message: 'create newElectronic error' })
 
-        const newProduct = await super.createProduct()
+        const newProduct = await super.createProduct(newElectronic._id)
         if (!newProduct) throw new BadRequestError({ message: 'create newProduct error' })
         
         return newProduct
