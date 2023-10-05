@@ -1,5 +1,11 @@
 const { productModel, clothingModel, electronicModel } = require('../models/product.model')
 const { BadRequestError } = require('../core/error.response')
+const { 
+    findAllDraftsForShop, 
+    findAllPublishedForShop, 
+    publishProductByShop,
+    unPublishProductByShop
+} = require('../models/repositories/product.repo')
 
 class ProductFactory {
     static async createProduct(type, payload) {
@@ -11,6 +17,24 @@ class ProductFactory {
             default:
                 throw new BadRequestError({ message: `Invalid product type ${type}` })
         }
+    }
+
+    static async findAllDraftsForShop({ product_shop, limit = 50, skip = 0 }) {
+        const query = { product_shop, isDraft: true }
+        return await findAllDraftsForShop({ query, limit, skip })
+    }
+
+    static async findAllPublishedForShop({ product_shop, limit = 50, skip = 0 }) {
+        const query = { product_shop, isPublished: true }
+        return await findAllPublishedForShop({ query, limit, skip })
+    }
+
+    static async publishProductByShop({ product_shop, product_id }) {
+        return await publishProductByShop({ product_shop, product_id })
+    }
+
+    static async unPublishProductByShop({ product_shop, product_id }) {
+        return await unPublishProductByShop({ product_shop, product_id })
     }
 }
 
