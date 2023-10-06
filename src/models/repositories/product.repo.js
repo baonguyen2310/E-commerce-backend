@@ -2,6 +2,8 @@
 
 const { productModel, clothingModel, electronicModel } = require('../product.model')
 
+// -------------FOR SHOP------------
+
 const findAllDraftsForShop = async ({ query, limit, skip }) => {
     return await queryProduct({ query, limit, skip })
 }
@@ -48,9 +50,38 @@ const unPublishProductByShop = async ({ product_shop, product_id }) => {
     return modifiedCount
 }
 
+// ------------END FOR SHOP---------------
+
+// ------------FOR NORMAL USER------------
+
+const findAllProducts = async ({ limit, sort, page, filter, select }) => {
+    const skip = (page - 1) * limit
+    const sortBy = sort === 'ctime' ? { _id: 1 } : { _id: -1} // giả sử nếu ctime thì sort theo id tăng dần
+    const products = await productModel.find( filter )
+    .sort(sortBy)
+    .skip(skip)
+    .limit(limit)
+    .select({ product_name: 1, product_price: 1, product_thumb: 1 })
+    .lean()
+
+    return products
+}
+
+const findProduct = async ({ product_id }) => {
+    const product = await productModel.findOne({ _id: product_id })
+    .select({ __v: 0 })
+    .lean()
+
+    return product
+}
+
+// ------------END FOR NORMAL USER--------
+
 module.exports = {
     findAllDraftsForShop,
     findAllPublishedForShop,
     publishProductByShop,
-    unPublishProductByShop
+    unPublishProductByShop,
+    findAllProducts,
+    findProduct
 }

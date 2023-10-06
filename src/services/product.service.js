@@ -4,7 +4,9 @@ const {
     findAllDraftsForShop, 
     findAllPublishedForShop, 
     publishProductByShop,
-    unPublishProductByShop
+    unPublishProductByShop,
+    findAllProducts,
+    findProduct
 } = require('../models/repositories/product.repo')
 
 class ProductFactory {
@@ -35,6 +37,14 @@ class ProductFactory {
 
     static async unPublishProductByShop({ product_shop, product_id }) {
         return await unPublishProductByShop({ product_shop, product_id })
+    }
+
+    static async findAllProducts({ limit = 50, sort = 'ctime', page = 1, filter = { isPublished: true } }) {
+        return await findAllProducts({ limit, sort, page, filter })
+    }
+
+    static async findProduct({ product_id }) {
+        return await findProduct({ product_id })
     }
 }
 

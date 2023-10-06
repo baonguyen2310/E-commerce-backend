@@ -88,6 +88,34 @@ class ProductController {
             next(error)
         }
     }
+
+    getAllProducts = async (req, res, next) => {
+        try {
+            const productList = await ProductService.findAllProducts(req.params)
+            if (!productList) throw new BadRequestError({ message: 'not have products for get' })
+            return new OK({
+                message: 'get all products success',
+                metadata: productList
+            }).send(res)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getProduct = async (req, res, next) => {
+        try {
+            const product = await ProductService.findProduct({
+                product_id: req.params.id
+            })
+            if (!product) throw new BadRequestError({ message: 'not has product for get' })
+            return new OK({
+                message: 'get product success',
+                metadata: product
+            }).send(res)
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = new ProductController()

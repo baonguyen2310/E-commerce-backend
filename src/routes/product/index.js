@@ -6,6 +6,11 @@ const { authentication } = require('../../auth/authUtils')
 
 const router = express.Router()
 
+// FOR NORMAL USER not must has authentication
+router.get('', productController.getAllProducts)
+router.get('/:id', productController.getProduct)
+
+// FOR SHOP must has authentication
 router.use(authentication)
 
 router.post('', productController.createProduct)
