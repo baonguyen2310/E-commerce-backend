@@ -1,5 +1,6 @@
 const { productModel, clothingModel, electronicModel } = require('../models/product.model')
 const { BadRequestError } = require('../core/error.response')
+const { removeUndefinedNullNestedObject, updateNestedObjectParser } = require('../utils/index')
 const { 
     findAllDraftsForShop, 
     findAllPublishedForShop, 
@@ -102,14 +103,24 @@ class Clothing extends Product {
     }
 
     async updateProduct(productId) {
-        const objectParams = this
+        removeUndefinedNullNestedObject(this) //this chính là new Clothing
 
-        if (objectParams.product_attributes) { //nếu có product_attributes thì update clothing model
-            await updateProductById({ productId, objectParams, model: clothingModel })
+        if (this.product_attributes) { //nếu có product_attributes thì update clothing model
+            await updateProductById({ 
+                productId: productId, 
+                bodyUpdate: updateNestedObjectParser(this.product_attributes), 
+                model: clothingModel 
+            })
         }
 
         // update product model
-        const updateProduct = await super.updateProduct(productId, objectParams)
+        const updateProduct = await super.updateProduct(
+            productId, 
+            updateNestedObjectParser(this)
+        )
+        // không nested: nếu truyền thiếu product_attributes thì
+        // clothing vẫn cập nhật đúng
+        // nhưng product sẽ bị thiếu dữ liệu trong product_attributes
         return updateProduct
     }
 }
@@ -129,14 +140,21 @@ class Electronic extends Product {
     }
 
     async updateProduct(productId) {
-        const objectParams = this
+        removeUndefinedNullNestedObject(this)
 
-        if (objectParams.product_attributes) {
-            await updateProductById({ productId, objectParams, model: electronicModel })
+        if (this.product_attributes) {
+            await updateProductById({ 
+                productId: productId, 
+                bodyUpdate: updateNestedObjectParser(this.product_attributes), 
+                model: clothingModel 
+            })
         }
 
         // update product model
-        const updateProduct = await super.updateProduct(productId, objectParams)
+        const updateProduct = await super.updateProduct(
+            productId, 
+            updateNestedObjectParser(this)
+        )
         return updateProduct
     }
 }
