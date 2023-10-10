@@ -50,6 +50,15 @@ const unPublishProductByShop = async ({ product_shop, product_id }) => {
     return modifiedCount
 }
 
+const updateProductById = async ({
+    productId,
+    bodyUpdate,
+    model,
+    isNew = true
+}) => {
+    return await model.findByIdAndUpdate( { _id: productId }, bodyUpdate, { new: isNew } )
+}
+
 // ------------END FOR SHOP---------------
 
 // ------------FOR NORMAL USER------------
@@ -83,5 +92,6 @@ module.exports = {
     publishProductByShop,
     unPublishProductByShop,
     findAllProducts,
-    findProduct
+    findProduct,
+    updateProductById
 }

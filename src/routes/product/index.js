@@ -14,6 +14,7 @@ router.get('/:id', productController.getProduct)
 router.use(authentication)
 
 router.post('', productController.createProduct)
+router.patch('/:id', productController.updateProduct)
 
 router.get('/drafts/all', productController.getAllDraftsForShop)
 router.get('/published/all', productController.getAllPublishedForShop)

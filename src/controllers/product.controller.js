@@ -23,6 +23,25 @@ class ProductController {
         }
     }
 
+    updateProduct = async (req, res, next) => {
+        try {
+            const updateProduct = await ProductService.updateProduct(
+                req.body.product_type,
+                req.params.id,
+                {
+                    ...req.body,
+                    product_shop: req.user.userId
+                }
+            )
+            return new OK({
+                message:'update product success',
+                metadata: updateProduct
+            }).send(res)
+        } catch (error) {
+            next(error)
+        }
+    }
+
     /**
      * @description Get all drafts for shop
      * @param {Number} limit

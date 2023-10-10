@@ -6,7 +6,8 @@ const {
     publishProductByShop,
     unPublishProductByShop,
     findAllProducts,
-    findProduct
+    findProduct,
+    updateProductById
 } = require('../models/repositories/product.repo')
 
 class ProductFactory {
@@ -16,6 +17,17 @@ class ProductFactory {
                 return new Clothing(payload).createProduct()
             case 'Electronic':
                 return new Electronic(payload).createProduct()
+            default:
+                throw new BadRequestError({ message: `Invalid product type ${type}` })
+        }
+    }
+
+    static async updateProduct(type, product_id, payload) {
+        switch(type) {
+            case 'Clothing':
+                return new Clothing(payload).updateProduct(product_id)
+            case 'Electronic':
+                return new Electronic(payload).updateProduct(product_id)
             default:
                 throw new BadRequestError({ message: `Invalid product type ${type}` })
         }
@@ -69,6 +81,10 @@ class Product {
             _id: product_id
         })
     }
+
+    async updateProduct(productId, bodyUpdate) {
+        return await updateProductById({ productId, bodyUpdate, model: productModel })
+    }
 }
 
 class Clothing extends Product {
@@ -83,6 +99,18 @@ class Clothing extends Product {
         if (!newProduct) throw new BadRequestError({ message: 'create newProduct error' })
 
         return newProduct
+    }
+
+    async updateProduct(productId) {
+        const objectParams = this
+
+        if (objectParams.product_attributes) { //nếu có product_attributes thì update clothing model
+            await updateProductById({ productId, objectParams, model: clothingModel })
+        }
+
+        // update product model
+        const updateProduct = await super.updateProduct(productId, objectParams)
+        return updateProduct
     }
 }
 
@@ -100,6 +128,17 @@ class Electronic extends Product {
         return newProduct
     }
 
+    async updateProduct(productId) {
+        const objectParams = this
+
+        if (objectParams.product_attributes) {
+            await updateProductById({ productId, objectParams, model: electronicModel })
+        }
+
+        // update product model
+        const updateProduct = await super.updateProduct(productId, objectParams)
+        return updateProduct
+    }
 }
 
 module.exports = ProductFactory
