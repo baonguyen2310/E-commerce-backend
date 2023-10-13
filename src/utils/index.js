@@ -1,8 +1,11 @@
 const _ = require('lodash')
+const { Types } = require('mongoose')
 
 const getInfoData = ({ fields = [], object = {} }) => {
     return _.pick(object, fields)
 }
+
+const convertToObjectIdMongoDB = param => new Types.ObjectId(param)
 
 const removeUndefinedNullNestedObject = obj => {
     Object.keys(obj).forEach(k => {
@@ -32,6 +35,7 @@ const updateNestedObjectParser = obj => {
 
 module.exports = {
     getInfoData,
+    convertToObjectIdMongoDB,
     removeUndefinedNullNestedObject,
     updateNestedObjectParser
 }
