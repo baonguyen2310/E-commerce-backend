@@ -84,6 +84,13 @@ const findProduct = async ({ product_id }) => {
     return product
 }
 
+const findProductPublishById = async ({ product_id }) => {
+    return await productModel.findOne({
+        _id: product_id,
+        isPublished: true
+    }).lean()
+}
+
 // ------------END FOR NORMAL USER--------
 
 module.exports = {
@@ -93,5 +100,6 @@ module.exports = {
     unPublishProductByShop,
     findAllProducts,
     findProduct,
-    updateProductById
+    updateProductById,
+    findProductPublishById
 }
