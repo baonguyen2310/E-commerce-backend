@@ -26,8 +26,16 @@ const updateProductInCart = async ({ userId, product }) => {
     return await cartModel.findOneAndUpdate(filter, update, options)
 }
 
+const findCartById = async (cartId) => {
+    return await cartModel.findOne({ 
+        _id: convertToObjectIdMongoDB(cartId),
+        cart_state: 'active'
+    }).lean()
+}
+
 module.exports = {
     checkUserCartExist,
     createUserCart,
-    updateProductInCart
+    updateProductInCart,
+    findCartById
 }
